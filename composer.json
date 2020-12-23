@@ -1,0 +1,41 @@
+{
+    "name": "oasis/aliyun-wrappers",
+    "description": "",
+    "type": "library",
+    "version": "0.1.1",
+    "authors": [
+        {
+            "name": "qitao",
+            "email": "4495036@qq.com"
+        }
+    ],
+    "require": {
+        "oasis/logging": "^1.4",
+        "aliyun/aliyun-mns-php-sdk": "^1.1",
+        "aliyunlog/aliyun-log-php-sdk": "^0.6.1",
+        "aliyuncs/oss-sdk-php": "^2.4",
+        "oasis/flysystem-wrappers": "^1.2",
+        "oasis/redshift": "v2.1.0-alpha2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.5"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../php_redshift"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Oasis\\Mlib\\AliyunWrappers\\": "src/Wrappers/",
+            "Oasis\\Mlib\\AliyunLogging\\": "src/Logging/",
+            "Oasis\\Mlib\\AliyunAdb\\": "src/Adb/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Oasis\\Mlib\\AliyunWrappers\\Test\\": "ut/"
+        }
+    }
+}
