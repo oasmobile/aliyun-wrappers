@@ -8,8 +8,7 @@ use Oasis\Mlib\AliyunWrappers\AliyunMNS;
 
 class AliyunLoggingHandler extends AbstractProcessingHandler
 {
-
-    /** @var \Oasis\AliyunWrappers\Mns\AliyunMns  */
+    /** @var AliyunMNS  */
     protected $publisher;
     protected $subject;
 

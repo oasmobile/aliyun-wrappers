@@ -3,37 +3,36 @@
 namespace Oasis\Mlib\AliyunWrappers;
 
 use AliyunMNS\Client;
+use AliyunMNS\Model\Message;
 use AliyunMNS\Model\QueueAttributes;
 use AliyunMNS\Model\SendMessageRequestItem;
+use AliyunMNS\Queue;
 use AliyunMNS\Requests\BatchReceiveMessageRequest;
 use AliyunMNS\Requests\BatchSendMessageRequest;
 use Exception;
-use Oasis\Mlib\AwsWrappers\SqsReceivedMessage;
 
 class AliyunQueue
 {
 
     const SERIALIZATION_FLAG = '_serialization';
     /**
-     * @var \AliyunMNS\Client
+     * @var Client
      */
     protected $client;
 
     /**
-     * @var \AliyunMNS\Queue
+     * @var Queue
      */
     protected $queue;
 
     public function __construct($accessId, $accessKey, $endPoint, $name)
     {
-
         $this->client = new Client($endPoint, $accessId, $accessKey);
         $this->queue  = $this->client->getQueueRef($name);
     }
 
     public function sendMessage($payroll, $delay = 0, $attributes = [])
     {
-
         $sentMessages = $this->sendMessages([$payroll], $delay, $attributes);
         if (!$sentMessages) {
             return false;
@@ -43,12 +42,11 @@ class AliyunQueue
         }
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     public function sendMessages(array $payrolls, $delay = 0, array $attributesList = [], $concurrency = 10)
     {
-
         $record = [];
         foreach ($payrolls as $payroll) {
-
             if (!is_string($payroll)) {
                 $payroll = json_encode(
                     [
@@ -65,9 +63,9 @@ class AliyunQueue
         return $response->getSendMessageResponseItems();
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     public function receiveMessage($wait = null, $visibility_timeout = null, $metas = [], $message_attributes = [])
     {
-
         $ret = $this->receiveMessageBatch(1, $wait);
         if (!$ret) {
             return null;
@@ -79,14 +77,12 @@ class AliyunQueue
 
     /**
      * @param      $max_count
-     * @param null $wait
+     * @param  null  $wait
      *
-     * @return \AliyunMNS\Model\Message[]
+     * @return Message[]
      */
     public function receiveMessages($max_count, $wait = null)
     {
-
-
         if ($max_count <= 0) {
             return [];
         }
@@ -105,43 +101,35 @@ class AliyunQueue
         }
 
         return $buffer;
-
-
     }
-
 
 
     public function deleteMessage($msg)
     {
-
         $this->deleteMessages([$msg]);
     }
 
     public function deleteMessages($messages)
     {
-
         $receiptHandles = [];
-        /** @var \AliyunMNS\Model\Message[] $messages */
+        /** @var Message[] $messages */
         foreach ($messages as $message) {
             $receiptHandles[] = $message->getReceiptHandle();
         }
 
         try {
             $this->queue->batchDeleteMessage($receiptHandles);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
         }
     }
 
     public function getAttribute($name)
     {
-
         return $this->getAttributes([$name]);
     }
 
     public function getAttributes(array $attributeNames)
     {
-
         /** @var QueueAttributes $queueAttributes */
         $queueAttributes = $this->queue->getAttribute()->getQueueAttributes();
         $attributes      = [
@@ -161,7 +149,6 @@ class AliyunQueue
 
         $array = [];
         foreach ($attributeNames as $name) {
-
             if (isset($attributes[$name])) {
                 $array[$name] = $attributes[$name];
             }
@@ -170,34 +157,15 @@ class AliyunQueue
         return $array;
     }
 
-    public function createQueue(array $attributes = [])
-    {
-    }
-
-    public function deleteQueue()
-    {
-    }
-
-    public function exists()
-    {
-    }
-
-    public function purge()
-    {
-    }
-
     protected function receiveMessageBatch(
         $maxCount = 1,
         $wait = null
-    )
-    {
-
+    ) {
         if ($maxCount > 10 || $maxCount < 1) {
             throw new \InvalidArgumentException("Max count for queue message receiving is 10");
         }
         $messages = [];
         try {
-
             $request = new BatchReceiveMessageRequest($maxCount, $wait);
             $reponse = $this->queue->batchReceiveMessage($request);
 
@@ -214,10 +182,7 @@ class AliyunQueue
                     $message->getReceiptHandle()
                 );
             }
-        }
-
-        catch (Exception $e) {
-            
+        } catch (Exception $e) {
         }
 
         return $messages;

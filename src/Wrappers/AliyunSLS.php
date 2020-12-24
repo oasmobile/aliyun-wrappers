@@ -7,6 +7,7 @@ use Aliyun_Log_Models_LogItem;
 use Aliyun_Log_Models_PutLogsRequest;
 use GuzzleHttp\Promise\Promise;
 
+//todo: add interface
 class AliyunSLS extends Aliyun_Log_Client
 {
 
