@@ -16,7 +16,7 @@ use Oasis\Mlib\AwsWrappers\Contracts\QueueInterface;
 class AliyunQueue implements QueueInterface
 {
 
-    const SERIALIZATION_FLAG = '_serialization';
+    public const SERIALIZATION_FLAG = '_serialization';
     /**
      * @var Client
      */
