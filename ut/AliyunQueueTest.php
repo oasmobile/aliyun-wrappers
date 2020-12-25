@@ -46,7 +46,6 @@ class AliyunQueueTest extends TestCase
 
         self::$queue->sendMessage('xxxx');
         $message = self::$queue->receiveMessage();
-        print_r($message);
         $this->assertEquals("xxxx", $message->getBody());
 
         self::$queue->deleteMessage($message);

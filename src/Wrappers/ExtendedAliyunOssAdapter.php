@@ -21,7 +21,7 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
     /**
      * Aliyun Oss Client.
      *
-     * @var \OSS\OssClient
+     * @var OssClient
      */
     protected $client;
 
@@ -47,9 +47,16 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
     ];
 
     /**
+     * protocol => registering adapter
+     *
+     * @var array
+     */
+    protected static $registeredWrappers = [];
+
+    /**
      * ExtendedAliyunOssAdapter constructor.
      *
-     * @param \OSS\OssClient $client
+     * @param  OssClient  $client
      * @param                $bucket
      * @param null           $prefix
      * @param array          $options
@@ -77,7 +84,7 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
     /**
      * Get the Aliyun Oss Client instance.
      *
-     * @return \OSS\OssClient
+     * @return OssClient
      */
     public function getClient()
     {
@@ -88,7 +95,7 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
     /**
      * @param                          $path
      * @param                          $localFilePath
-     * @param \League\Flysystem\Config $config
+     * @param  Config  $config
      *
      * @return array|false
      */
@@ -121,7 +128,7 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
     /**
      * @param string                   @$path
      * @param string                   @$contents
-     * @param \League\Flysystem\Config $config
+     * @param  Config  $config
      *
      * @return array|false
      */
@@ -229,7 +236,7 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
      * @param string @$dirname
      *
      * @return bool
-     * @throws \OSS\Core\OssException
+     * @throws OssException
      */
     public function deleteDir($dirname)
     {
@@ -309,7 +316,7 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
      * @param bool   $recursive
      *
      * @return array
-     * @throws \OSS\Core\OssException
+     * @throws OssException
      */
     public function listContents($directory = '', $recursive = false)
     {
@@ -441,7 +448,7 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
      * @param bool   $use_ssl
      *
      * @return string
-     * @throws \OSS\Core\OssException
+     * @throws OssException
      */
     public function getSignedDownloadUrl($path, $expires = 3600, $host_name = '', $use_ssl = false)
     {
@@ -522,5 +529,28 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
         $finder->in($path);
 
         return $finder;
+    }
+
+    public function registerStreamWrapper($protocol = "s3")
+    {
+        throw new \Exception("Not implement yet: registerStreamWrapper()");
+//        static $count = 0;
+//        if ($protocol === null) {
+//            $count++;
+//            $protocol = sprintf("s3f-%d", $count);
+//        }
+//
+//        if (isset(self::$registeredWrappers[$protocol])) {
+//            if (self::$registeredWrappers[$protocol] === $this) {
+//                return $protocol;
+//            }
+//            throw new \LogicException("Protocol $protocol:// is already registered to another s3 resource");
+//        }
+//
+//        StreamWrapper::register($this->s3Client, $protocol);
+//
+//        self::$registeredWrappers[$protocol] = $this;
+//
+//        return $protocol;
     }
 }

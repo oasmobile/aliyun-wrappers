@@ -2,10 +2,13 @@
 
 namespace Oasis\Mlib\AliyunWrappers;
 
+use Aliyun_Log_Client;
 use Aliyun_Log_Models_LogItem;
 use Aliyun_Log_Models_PutLogsRequest;
+use GuzzleHttp\Promise\Promise;
+use Oasis\Mlib\AliyunWrappers\Contracts\KafkaInterface;
 
-class AliyunSLS extends \Aliyun_Log_Client
+class AliyunSLS extends Aliyun_Log_Client implements KafkaInterface
 {
 
     public $project;
@@ -50,15 +53,25 @@ class AliyunSLS extends \Aliyun_Log_Client
             $logItems[] = $logItem;
         }
 
-        $request  = new Aliyun_Log_Models_PutLogsRequest(
+        $request = new Aliyun_Log_Models_PutLogsRequest(
             $this->project,
             $this->logstore,
             null,
             null,
             $logItems
         );
+
         $response = $this->putLogs($request);
 
         return $response->getRequestId();
+    }
+
+    public function putBatchRecordAsync($data)
+    {
+
+        $promise = new Promise();
+        $promise->resolve($this->putBatchRecord($data));
+
+        return $promise;
     }
 }

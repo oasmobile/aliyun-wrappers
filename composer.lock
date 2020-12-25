@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d1ed328296ec99985181f357df961d87",
+    "content-hash": "79702018bfb0f9ce835d926bf5dc0f78",
     "packages": [
         {
             "name": "aliyun/aliyun-mns-php-sdk",
@@ -127,16 +127,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.170.0",
+            "version": "3.171.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "7f457a08219173eba4b856cb7aef3a903cd790cc"
+                "reference": "5587d22e63ef82ef74dffca5d47f307b84137b51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/7f457a08219173eba4b856cb7aef3a903cd790cc",
-                "reference": "7f457a08219173eba4b856cb7aef3a903cd790cc",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/5587d22e63ef82ef74dffca5d47f307b84137b51",
+                "reference": "5587d22e63ef82ef74dffca5d47f307b84137b51",
                 "shasum": ""
             },
             "require": {
@@ -208,7 +208,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2020-12-15T19:13:22+00:00"
+            "time": "2020-12-23T19:12:28+00:00"
         },
         {
             "name": "bramus/ansi-php",
@@ -1492,16 +1492,16 @@
         },
         {
             "name": "oasis/aws-wrappers",
-            "version": "v2.11.0",
+            "version": "v2.11.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/oasmobile/php-aws-wrappers.git",
-                "reference": "0f756dc60ef6f51e9a99f67c9125289e40f19e3f"
+                "reference": "a193df30c3f36bc578887f6d48f3468c02e1242d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oasmobile/php-aws-wrappers/zipball/0f756dc60ef6f51e9a99f67c9125289e40f19e3f",
-                "reference": "0f756dc60ef6f51e9a99f67c9125289e40f19e3f",
+                "url": "https://api.github.com/repos/oasmobile/php-aws-wrappers/zipball/a193df30c3f36bc578887f6d48f3468c02e1242d",
+                "reference": "a193df30c3f36bc578887f6d48f3468c02e1242d",
                 "shasum": ""
             },
             "require": {
@@ -1532,7 +1532,7 @@
                 }
             ],
             "description": "Wrappers for AWS SDK",
-            "time": "2018-07-23T02:22:26+00:00"
+            "time": "2020-12-24T08:00:29+00:00"
         },
         {
             "name": "oasis/event",
@@ -1665,16 +1665,16 @@
         },
         {
             "name": "oasis/redshift",
-            "version": "v2.1.0-alpha2",
+            "version": "v2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/oasmobile/php-redshift.git",
-                "reference": "0ce97436aac9ad869db735a20474ea3758e67960"
+                "reference": "4a30ceb8c2962a01766aa0b6a3147ff7796a69e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oasmobile/php-redshift/zipball/0ce97436aac9ad869db735a20474ea3758e67960",
-                "reference": "0ce97436aac9ad869db735a20474ea3758e67960",
+                "url": "https://api.github.com/repos/oasmobile/php-redshift/zipball/4a30ceb8c2962a01766aa0b6a3147ff7796a69e6",
+                "reference": "4a30ceb8c2962a01766aa0b6a3147ff7796a69e6",
                 "shasum": ""
             },
             "require": {
@@ -1703,7 +1703,7 @@
                 }
             ],
             "description": "Redshift connection component with helper functions",
-            "time": "2020-12-12T11:30:05+00:00"
+            "time": "2020-12-25T02:18:55+00:00"
         },
         {
             "name": "oasis/utils",
@@ -1883,16 +1883,16 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v4.4.17",
+            "version": "v4.4.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "9f1d1d883b79a91ef320c0c6e803494e042ef36e"
+                "reference": "ebd0965f2dc2d4e0f11487c16fbb041e50b5c09b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/9f1d1d883b79a91ef320c0c6e803494e042ef36e",
-                "reference": "9f1d1d883b79a91ef320c0c6e803494e042ef36e",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/ebd0965f2dc2d4e0f11487c16fbb041e50b5c09b",
+                "reference": "ebd0965f2dc2d4e0f11487c16fbb041e50b5c09b",
                 "shasum": ""
             },
             "require": {
@@ -1923,7 +1923,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2020-11-17T19:45:34+00:00"
+            "time": "2020-12-08T16:59:59+00:00"
         },
         {
             "name": "symfony/polyfill",
@@ -3311,16 +3311,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v4.4.17",
+            "version": "v4.4.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "7531361cf38e4816821b4a12a42542b3c6143ad1"
+                "reference": "bbce94f14d73732340740366fcbe63363663a403"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/7531361cf38e4816821b4a12a42542b3c6143ad1",
-                "reference": "7531361cf38e4816821b4a12a42542b3c6143ad1",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/bbce94f14d73732340740366fcbe63363663a403",
+                "reference": "bbce94f14d73732340740366fcbe63363663a403",
                 "shasum": ""
             },
             "require": {
@@ -3361,7 +3361,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2020-11-24T12:28:30+00:00"
+            "time": "2020-12-08T16:59:59+00:00"
         },
         {
             "name": "webmozart/assert",
@@ -3415,9 +3415,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "oasis/redshift": 15
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": [],

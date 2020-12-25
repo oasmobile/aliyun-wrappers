@@ -2,18 +2,12 @@
 
 namespace Oasis\Mlib\AliyunWrappers;
 
-use AliyunMNS\Client;
 use AliyunMNS\Model\Message;
-use AliyunMNS\Model\QueueAttributes;
-use AliyunMNS\Model\SendMessageRequestItem;
-use AliyunMNS\Requests\BatchReceiveMessageRequest;
-use AliyunMNS\Requests\BatchSendMessageRequest;
 use AliyunMNS\Traits\MessagePropertiesForPeek;
-use Exception;
+use Oasis\Mlib\AwsWrappers\Contracts\QueueMessageInterface;
 
-class AliyunQueueMessage extends Message
+class AliyunQueueMessage extends Message implements QueueMessageInterface
 {
-
     use MessagePropertiesForPeek;
 
     protected $body;
