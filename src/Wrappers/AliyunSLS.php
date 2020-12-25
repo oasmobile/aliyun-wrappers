@@ -6,9 +6,9 @@ use Aliyun_Log_Client;
 use Aliyun_Log_Models_LogItem;
 use Aliyun_Log_Models_PutLogsRequest;
 use GuzzleHttp\Promise\Promise;
+use Oasis\Mlib\AliyunWrappers\Contracts\KafkaInterface;
 
-//todo: add interface
-class AliyunSLS extends Aliyun_Log_Client
+class AliyunSLS extends Aliyun_Log_Client implements KafkaInterface
 {
 
     public $project;

@@ -5,8 +5,9 @@ namespace Oasis\Mlib\AliyunWrappers;
 use AliyunMNS\Client;
 use AliyunMNS\Requests\PublishMessageRequest;
 use AliyunMNS\Topic;
+use Oasis\Mlib\AwsWrappers\Contracts\PublisherInterface;
 
-class AliyunMNS
+class AliyunMNS implements PublisherInterface
 {
     /**
      * @var Client
@@ -21,8 +22,7 @@ class AliyunMNS
         $this->topic  = $this->client->getTopicRef($topic);
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
-    public function publish($subject, $body)
+    public function publish($subject, $body, $channels = [])
     {
         $message = new PublishMessageRequest($body);
         $this->topic->publishMessage($message);

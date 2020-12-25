@@ -10,8 +10,10 @@ use AliyunMNS\Queue;
 use AliyunMNS\Requests\BatchReceiveMessageRequest;
 use AliyunMNS\Requests\BatchSendMessageRequest;
 use Exception;
+use InvalidArgumentException;
+use Oasis\Mlib\AwsWrappers\Contracts\QueueInterface;
 
-class AliyunQueue
+class AliyunQueue implements QueueInterface
 {
 
     const SERIALIZATION_FLAG = '_serialization';
@@ -42,7 +44,6 @@ class AliyunQueue
         }
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
     public function sendMessages(array $payrolls, $delay = 0, array $attributesList = [], $concurrency = 10)
     {
         $record = [];
@@ -63,7 +64,6 @@ class AliyunQueue
         return $response->getSendMessageResponseItems();
     }
 
-    /** @noinspection PhpUnusedParameterInspection */
     public function receiveMessage($wait = null, $visibility_timeout = null, $metas = [], $message_attributes = [])
     {
         $ret = $this->receiveMessageBatch(1, $wait);
@@ -162,7 +162,7 @@ class AliyunQueue
         $wait = null
     ) {
         if ($maxCount > 10 || $maxCount < 1) {
-            throw new \InvalidArgumentException("Max count for queue message receiving is 10");
+            throw new InvalidArgumentException("Max count for queue message receiving is 10");
         }
         $messages = [];
         try {
