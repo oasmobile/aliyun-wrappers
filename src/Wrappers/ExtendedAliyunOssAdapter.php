@@ -505,9 +505,8 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
     {
 
         $path   = $this->applyPathPrefix($path);
-        $osspath = sprintf("oss://%s/%s", $this->getBucket(), $path);
 
-        return $osspath;
+        return sprintf("oss://%s/%s", $this->getBucket(), $path);
     }
 
     public function getFinder($path = '')
@@ -531,26 +530,9 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
         return $finder;
     }
 
+    /** @noinspection PhpUnusedParameterInspection */
     public function registerStreamWrapper($protocol = "s3")
     {
         throw new \Exception("Not implement yet: registerStreamWrapper()");
-//        static $count = 0;
-//        if ($protocol === null) {
-//            $count++;
-//            $protocol = sprintf("s3f-%d", $count);
-//        }
-//
-//        if (isset(self::$registeredWrappers[$protocol])) {
-//            if (self::$registeredWrappers[$protocol] === $this) {
-//                return $protocol;
-//            }
-//            throw new \LogicException("Protocol $protocol:// is already registered to another s3 resource");
-//        }
-//
-//        StreamWrapper::register($this->s3Client, $protocol);
-//
-//        self::$registeredWrappers[$protocol] = $this;
-//
-//        return $protocol;
     }
 }
