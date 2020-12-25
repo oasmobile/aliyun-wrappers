@@ -2,7 +2,6 @@
     "name": "oasis/aliyun-wrappers",
     "description": "",
     "type": "library",
-    "version": "0.1.1",
     "license": "MIT",
     "authors": [
         {
