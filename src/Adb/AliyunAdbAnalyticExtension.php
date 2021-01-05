@@ -82,7 +82,7 @@ class AliyunAdbAnalyticExtension extends ConnectionAnalyticExtension
         $credential = $credentialProvider->getCredentialString();
         $stmt       = sprintf(
             "UNLOAD (%s) TO '%s' ACCESS_KEY_ID '%s' SECRET_ACCESS_KEY '%s'  format text  %s %s ",
-            $this->connection->normalizeSingleQuotedValue($sql),
+            $this->normalizeSingleQuotedValue($sql),
             $this->normalizeFilePath($filePath),
             $credential['access_key'],
             $credential['access_secret'],
@@ -149,5 +149,13 @@ class AliyunAdbAnalyticExtension extends ConnectionAnalyticExtension
         return
             $needle === ""
             || strrpos($haystack, $needle, -strlen($haystack)) !== false;
+    }
+
+    private function normalizeSingleQuotedValue($value)
+    {
+
+        $value = pg_escape_string($value);
+
+        return "'$value'";
     }
 }
