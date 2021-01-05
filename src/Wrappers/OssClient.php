@@ -2,11 +2,31 @@
 
 namespace Oasis\Mlib\AliyunWrappers;
 
+use InvalidArgumentException;
+use OSS\Core\OssException;
+
 class OssClient extends \OSS\OssClient
 {
-    /** @noinspection PhpUnusedParameterInspection */
+
     public function getPresignedUri($path, $expires = '+30 minutes')
     {
-        throw new \Exception("No implement for getPresignedUri()");
+
+        if (preg_match('#^oss://(.*?)/(.*)$#', $path, $matches)) {
+            $bucket = $matches[1];
+            $path   = $matches[2];
+        }
+        else {
+            throw new InvalidArgumentException("path should be a full path starting with oss://");
+        }
+
+        echo $timeout = is_string($expires) ? strtotime($expires) - time() : $expires;
+
+        try {
+            return $this->signUrl($bucket, $path, $timeout);
+        }
+        catch (OssException $e) {
+        }
+
+        return  false;
     }
 }
