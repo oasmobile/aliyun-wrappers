@@ -56,7 +56,7 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
     /**
      * ExtendedAliyunOssAdapter constructor.
      *
-     * @param  OssClient  $client
+     * @param OssClient      $client
      * @param                $bucket
      * @param null           $prefix
      * @param array          $options
@@ -95,7 +95,7 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
     /**
      * @param                          $path
      * @param                          $localFilePath
-     * @param  Config  $config
+     * @param Config                   $config
      *
      * @return array|false
      */
@@ -128,7 +128,7 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
     /**
      * @param string                   @$path
      * @param string                   @$contents
-     * @param  Config  $config
+     * @param Config $config
      *
      * @return array|false
      */
@@ -307,6 +307,18 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
         $contents = $this->client->getObject($this->bucket, $object);
 
         return compact('contents', 'path');
+    }
+
+    public function readStream($path)
+    {
+
+        $object = $this->read($path);
+        $stream = fopen('php://temp', 'w+b');
+
+        fwrite($stream, $object['contents']);
+        rewind($stream);
+
+        return compact('stream', 'path');
     }
 
     /**
@@ -504,7 +516,7 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
     public function getRealpath($path)
     {
 
-        $path   = $this->applyPathPrefix($path);
+        $path = $this->applyPathPrefix($path);
 
         return sprintf("oss://%s/%s", $this->getBucket(), $path);
     }
@@ -533,6 +545,7 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
     /** @noinspection PhpUnusedParameterInspection */
     public function registerStreamWrapper($protocol = "s3")
     {
+
         throw new \Exception("Not implement yet: registerStreamWrapper()");
     }
 }
