@@ -37,7 +37,7 @@ class AliyunLoggingHandler extends AbstractProcessingHandler
     {
 
         if ($this->contentBuffer) {
-            $this->publisher->publish($this->subject, $this->contentBuffer);
+            $this->publisher->publish($this->subject, $this->contentBuffer,AliyunMNS::CHANNEL_EMAIL);
             $this->contentBuffer = '';
         }
     }
