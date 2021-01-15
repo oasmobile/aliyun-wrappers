@@ -312,11 +312,16 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
     public function readStream($path)
     {
 
-        $object = $this->read($path);
-        $stream = fopen('php://temp', 'w+b');
+        $object    = $this->applyPathPrefix($path);
+        $resource  = stream_get_meta_data(tmpfile());
+        $localfile = $resource['uri'];
 
-        fwrite($stream, $object['contents']);
-        rewind($stream);
+        $option = [
+            OssClient::OSS_FILE_DOWNLOAD => $localfile,
+        ];
+        $this->client->getObject($this->bucket, $object, $option);
+
+        $stream = fopen($localfile, 'r');
 
         return compact('stream', 'path');
     }
