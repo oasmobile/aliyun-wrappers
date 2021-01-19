@@ -99,7 +99,7 @@ class AliyunAdbAnalyticExtension extends ConnectionAnalyticExtension
             $stmt .= " \"delimiter\" '|' ";
         }
         $stmt .= sprintf(" ENDPOINT '%s' FDW 'oss_fdw'", $credential['end_point']);
-
+ 
         $prepared_statement = $this->connection->prepare($stmt);
         $prepared_statement->execute();
 
@@ -109,14 +109,18 @@ class AliyunAdbAnalyticExtension extends ConnectionAnalyticExtension
             list($bucket, $object) = $this->parseOssPath($filePath);
             $list = $client->listObjects($bucket, ['prefix' => $object]);
 
-            $content = '';
+            $ext      = "000" . ($gzip == true ? ".gz" : "");
+            $fpath    = $object . $ext;
+            $position = 0;
             foreach ($list->getObjectList() as $item) {
 
-                $content .= $client->getObject($bucket, $item->getKey());
+                $resource = stream_get_meta_data(tmpfile());
+                $tmpfile  = $resource['uri'];
+
+                $client->getObject($bucket, $item->getKey(), [OssClient::OSS_FILE_DOWNLOAD => $tmpfile]);
+                $position = $client->appendFile($bucket, $fpath, $tmpfile, $position);
                 $client->deleteObject($bucket, $item->getKey());
             }
-            $ext = "000" . ($gzip == true ? ".gz" : "");
-            $client->putObject($bucket, $object . $ext, $content);
         }
     }
 
