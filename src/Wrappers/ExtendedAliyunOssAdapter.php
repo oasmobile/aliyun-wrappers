@@ -311,9 +311,9 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
 
     public function readStream($path)
     {
-
         $object    = $this->applyPathPrefix($path);
-        $resource  = stream_get_meta_data(tmpfile());
+        $stream    = tmpfile();
+        $resource  = stream_get_meta_data($stream);
         $localfile = $resource['uri'];
 
         $option = [
@@ -321,9 +321,7 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
         ];
         $this->client->getObject($this->bucket, $object, $option);
 
-        $stream = fopen($localfile, 'r');
-
-        return compact('stream', 'path');
+        return compact('stream', 'path'); 
     }
 
     /**
