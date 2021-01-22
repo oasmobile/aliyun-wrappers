@@ -99,7 +99,7 @@ class AliyunAdbAnalyticExtension extends ConnectionAnalyticExtension
             $stmt .= " \"delimiter\" '|' ";
         }
         $stmt .= sprintf(" ENDPOINT '%s' FDW 'oss_fdw'", $credential['end_point']);
- 
+
         $prepared_statement = $this->connection->prepare($stmt);
         $prepared_statement->execute();
 
@@ -112,6 +112,12 @@ class AliyunAdbAnalyticExtension extends ConnectionAnalyticExtension
             $ext      = "000" . ($gzip == true ? ".gz" : "");
             $fpath    = $object . $ext;
             $position = 0;
+
+            $fh = tmpfile();
+            fwrite($fh, "");
+            $resource = stream_get_meta_data($fh);
+            $position = $client->appendFile($bucket, $fpath, $resource['uri'], $position);
+
             foreach ($list->getObjectList() as $item) {
 
                 $resource = stream_get_meta_data(tmpfile());
