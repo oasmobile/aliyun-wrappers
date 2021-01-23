@@ -125,7 +125,9 @@ class AliyunQueue implements QueueInterface
 
     public function getAttribute($name)
     {
-        return $this->getAttributes([$name]);
+
+        $result = $this->getAttributes([$name]); 
+        return $result[$name];
     }
 
     public function getAttributes(array $attributeNames)
