@@ -29,12 +29,14 @@ class AliyunQueue implements QueueInterface
 
     public function __construct($accessId, $accessKey, $endPoint, $name)
     {
+
         $this->client = new Client($endPoint, $accessId, $accessKey);
         $this->queue  = $this->client->getQueueRef($name);
     }
 
     public function sendMessage($payroll, $delay = 0, $attributes = [])
     {
+
         $sentMessages = $this->sendMessages([$payroll], $delay, $attributes);
         if (!$sentMessages) {
             return false;
@@ -46,6 +48,7 @@ class AliyunQueue implements QueueInterface
 
     public function sendMessages(array $payrolls, $delay = 0, array $attributesList = [], $concurrency = 10)
     {
+
         $record = [];
         foreach ($payrolls as $payroll) {
             if (!is_string($payroll)) {
@@ -66,6 +69,7 @@ class AliyunQueue implements QueueInterface
 
     public function receiveMessage($wait = null, $visibility_timeout = null, $metas = [], $message_attributes = [])
     {
+
         $ret = $this->receiveMessageBatch(1, $wait);
         if (!$ret) {
             return null;
@@ -77,12 +81,13 @@ class AliyunQueue implements QueueInterface
 
     /**
      * @param      $max_count
-     * @param  null  $wait
+     * @param null $wait
      *
      * @return Message[]
      */
     public function receiveMessages($max_count, $wait = null)
     {
+
         if ($max_count <= 0) {
             return [];
         }
@@ -103,35 +108,44 @@ class AliyunQueue implements QueueInterface
         return $buffer;
     }
 
-
     public function deleteMessage($msg)
     {
+
         $this->deleteMessages([$msg]);
     }
 
     public function deleteMessages($messages)
     {
-        $receiptHandles = [];
-        /** @var Message[] $messages */
-        foreach ($messages as $message) {
-            $receiptHandles[] = $message->getReceiptHandle();
+
+        $total = count($messages);
+        if (!$total) {
+            return;
         }
 
-        try {
-            $this->queue->batchDeleteMessage($receiptHandles);
-        } catch (Exception $e) {
+        $buffer = [];
+        foreach ($messages as $msg) {
+            $buffer[] = $msg->getReceiptHandle();
+            if (count($buffer) >= 10) {
+                $this->queue->batchDeleteMessage($buffer);
+                $buffer = [];
+            }
+        }
+        if ($buffer) {
+            $this->queue->batchDeleteMessage($buffer);
         }
     }
 
     public function getAttribute($name)
     {
 
-        $result = $this->getAttributes([$name]); 
+        $result = $this->getAttributes([$name]);
+
         return $result[$name];
     }
 
     public function getAttributes(array $attributeNames)
     {
+
         /** @var QueueAttributes $queueAttributes */
         $queueAttributes = $this->queue->getAttribute()->getQueueAttributes();
         $attributes      = [
@@ -162,7 +176,9 @@ class AliyunQueue implements QueueInterface
     protected function receiveMessageBatch(
         $maxCount = 1,
         $wait = null
-    ) {
+    )
+    {
+
         if ($maxCount > 10 || $maxCount < 1) {
             throw new InvalidArgumentException("Max count for queue message receiving is 10");
         }
@@ -184,7 +200,8 @@ class AliyunQueue implements QueueInterface
                     $message->getReceiptHandle()
                 );
             }
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
         }
 
         return $messages;

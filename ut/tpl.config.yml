@@ -1,6 +1,7 @@
 mns:
     access_key: x
     access_secret: x
+    account_name: ''
     end_point: http://x.mns.us-east-1.aliyuncs.com/
     topic: mdata-topic
     queue: mdata-collect-failed

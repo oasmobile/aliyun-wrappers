@@ -29,6 +29,7 @@ class AliyunQueueTest extends TestCase
             $config['access_key'],
             $config['access_secret'],
             $config['end_point'],
+            $config['account_name'],
             $config['topic']
         );
 
