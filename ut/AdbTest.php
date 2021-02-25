@@ -93,7 +93,7 @@ class AdbTest extends TestCase
         self::$adb->copyFromS3(
             "php_adb_test",
             ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7'],
-            self::$path,
+            self::$path.'000',
             self::$s3Region,
             self::$sts,
             true,
@@ -109,41 +109,22 @@ class AdbTest extends TestCase
     public function testCopyManifest()
     {
 
-        for ($i = 10; $i <= 12; $i++) {
-            $url                = sprintf("oss://%s/test/%s/%s.csv", self::$bucket, self::$prefix, $i);
-            $array['entries'][] = [
-                'url'       => $url,
-                'mandatory' => true,
-            ];
-            self::$adb->unloadToS3(
-                "select * from php_adb_test",
-                $url,
-                self::$sts,
-                true,
-                false,
-                false
-            );
-        }
-
-        self::$client->putObject(self::$bucket, sprintf('test/%s/manifest', self::$prefix), json_encode($array));
-
         self::$adb->copyFromS3(
             "php_adb_test",
             ['a1', 'a2', 'a3', 'a4', 'a5', 'a6', 'a7'],
-            sprintf("oss://%s/test/%s/manifest", self::$bucket, self::$prefix),
+            self::$path.'.manifest',
             self::$s3Region,
             self::$sts,
             true,
             false,
-            100000,
+            1000,
             $options = [
-                'MANIFEST',
+                'MANIFEST'
             ]
         );
 
         $arr = self::$adb->fetchAll('select count(*) as count from php_adb_test ');
-        $this->assertEquals($arr[0]['count'], 24);
+        $this->assertEquals($arr[0]['count'], 9);
     }
-
 
 }
