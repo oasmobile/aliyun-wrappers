@@ -22,50 +22,25 @@ class AliyunAdbAnalyticExtension extends ConnectionAnalyticExtension
     )
     {
 
-        $fileList   = [];
         $credential = $credentialProvider->getCredentialString();
+        $stmt       = sprintf(
+            "COPY %s (%s) FROM '%s' ACCESS_KEY_ID '%s' SECRET_ACCESS_KEY '%s' format csv %s %s %s %s %s",
+            $this->connection->normalizeTable($table),
+            $this->connection->normalizeColumns($columns),
+            $this->normalizeFilePath($filePath),
+            $credential['access_key'],
+            $credential['access_secret'],
+            in_array('MANIFEST', $options) ? "MANIFEST" : "",
+            ($gzip ? " filetype 'gzip'" : ""),
+            ($escaped ? " \"escape\" '\'" : ""),
+            ($maxerror > 0 ? "segment_reject_limit '$maxerror'" : ""),
+            !in_array('delimiter', $options) ? " \"delimiter\" '|' " : ""
+        );
 
-        if (in_array('MANIFEST', $options)) {
+        $stmt .= sprintf(" ENDPOINT '%s' FDW 'oss_fdw'", $credential['end_point']);
 
-
-            $client = new OssClient($credential['access_key'], $credential['access_secret'], $credential['end_point']);
-
-            list($bucket, $object) = $this->parseOssPath($filePath);
-            $content = $client->getObject($bucket, $object);
-            $list    = \GuzzleHttp\json_decode($content, true);
-
-            if ($list) {
-                foreach ($list['entries'] as $item) {
-                    $fileList[] = $item['url'];
-                }
-            }
-        }
-        else {
-            $fileList[] = $filePath;
-        }
-
-        foreach ($fileList as $path) {
-
-            $stmt = sprintf(
-                "COPY %s (%s) FROM '%s' ACCESS_KEY_ID '%s' SECRET_ACCESS_KEY '%s'  format  csv %s %s %s",
-                $this->connection->normalizeTable($table),
-                $this->connection->normalizeColumns($columns),
-                $this->normalizeFilePath($path),
-                $credential['access_key'],
-                $credential['access_secret'],
-                ($gzip ? " filetype 'gzip'" : ""),
-                ($escaped ? " \"escape\" '\'" : ""),
-                ($maxerror > 0 ? "segment_reject_limit '$maxerror'" : "")
-            );
-            if (!in_array('delimiter', $options)) {
-                $stmt .= " \"delimiter\" '|' ";
-            }
-
-            $stmt .= sprintf(" ENDPOINT '%s' FDW 'oss_fdw'", $credential['end_point']);
-
-            $prepared_statement = $this->connection->prepare($stmt);
-            $prepared_statement->execute();
-        }
+        mdebug("Copying using stmt:\n%s", $stmt);
+        $this->connection->exec($stmt);
     }
 
     public function unloadToS3(
@@ -79,54 +54,39 @@ class AliyunAdbAnalyticExtension extends ConnectionAnalyticExtension
     )
     {
 
+        $manifest   = $filePath . ".manifest";
         $credential = $credentialProvider->getCredentialString();
         $stmt       = sprintf(
-            "UNLOAD (%s) TO '%s' ACCESS_KEY_ID '%s' SECRET_ACCESS_KEY '%s'  format csv  %s %s ",
+            "UNLOAD (%s) TO '%s' ACCESS_KEY_ID '%s' SECRET_ACCESS_KEY '%s'  format csv  %s %s %s %s %s ALLOWOVERWRITE 'true'",
             $this->normalizeSingleQuotedValue($sql),
             $this->normalizeFilePath($filePath),
             $credential['access_key'],
             $credential['access_secret'],
+            ($parallel ? "" : "MANIFEST '" . $manifest . "' PARALLEL OFF"),
             ($gzip ? " filetype 'gzip'" : ""),
-            ($escaped ? " \"escape\" '\'" : "")
+            ($escaped ? " \"escape\" '\'" : ""),
+            !in_array('delimiter', $options) ? " \"delimiter\" '|' " : "",
+            in_array('ADDQUOTES', $options) ? " \"quote\" '\"' force_quote_all 'true' " : ""
         );
 
-        if (in_array('ADDQUOTES', $options)) {
-            $stmt .= " \"quote\" '\"' force_quote_all 'true' ";
-            unset($options['ADDQUOTES']);
-        }
-
-        if (!in_array('delimiter', $options)) {
-            $stmt .= " \"delimiter\" '|' ";
-        }
         $stmt .= sprintf(" ENDPOINT '%s' FDW 'oss_fdw'", $credential['end_point']);
 
-        $prepared_statement = $this->connection->prepare($stmt);
-        $prepared_statement->execute();
+        mdebug("Unloading using stmt:\n%s", $stmt);
+        $this->connection->exec($stmt);
 
         if ($parallel == false) {
 
             $client = new OssClient($credential['access_key'], $credential['access_secret'], $credential['end_point']);
-            list($bucket, $object) = $this->parseOssPath($filePath);
-            $list = $client->listObjects($bucket, ['prefix' => $object]);
+            list($bucket, $object) = $this->parseOssPath($manifest);
+            $content = $client->getObject($bucket, $object);
+            $content = json_decode($content, true);
 
+            list($bucket, $fromObject) = $this->parseOssPath($content['entries'][0]['url']);
+            list($bucket, $toObject) = $this->parseOssPath($filePath);
             $ext      = "000" . ($gzip == true ? ".gz" : "");
-            $fpath    = $object . $ext;
-            $position = 0;
+            $toObject = $toObject . $ext;
 
-            $fh = tmpfile();
-            fwrite($fh, "");
-            $resource = stream_get_meta_data($fh);
-            $position = $client->appendFile($bucket, $fpath, $resource['uri'], $position);
-
-            foreach ($list->getObjectList() as $item) {
-
-                $resource = stream_get_meta_data(tmpfile());
-                $tmpfile  = $resource['uri'];
-
-                $client->getObject($bucket, $item->getKey(), [OssClient::OSS_FILE_DOWNLOAD => $tmpfile]);
-                $position = $client->appendFile($bucket, $fpath, $tmpfile, $position);
-                $client->deleteObject($bucket, $item->getKey());
-            }
+            $client->copyObject($bucket, $fromObject, $bucket, $toObject);
         }
     }
 
