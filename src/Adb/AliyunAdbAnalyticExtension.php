@@ -81,12 +81,15 @@ class AliyunAdbAnalyticExtension extends ConnectionAnalyticExtension
             $content = $client->getObject($bucket, $object);
             $content = json_decode($content, true);
 
-            list($bucket, $fromObject) = $this->parseOssPath($content['entries'][0]['url']);
-            list($bucket, $toObject) = $this->parseOssPath($filePath);
-            $ext      = "000" . ($gzip == true ? ".gz" : "");
-            $toObject = $toObject . $ext;
 
-            $client->copyObject($bucket, $fromObject, $bucket, $toObject);
+            if (isset($content['entries'][0]['url'])) {
+                list($bucket, $fromObject) = $this->parseOssPath($content['entries'][0]['url']);
+                list($bucket, $toObject) = $this->parseOssPath($filePath);
+                $ext      = "000" . ($gzip == true ? ".gz" : "");
+                $toObject = $toObject . $ext;
+
+                $client->copyObject($bucket, $fromObject, $bucket, $toObject);
+            }
         }
     }
 

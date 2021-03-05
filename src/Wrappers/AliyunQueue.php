@@ -126,12 +126,23 @@ class AliyunQueue implements QueueInterface
         foreach ($messages as $msg) {
             $buffer[] = $msg->getReceiptHandle();
             if (count($buffer) >= 10) {
-                $this->queue->batchDeleteMessage($buffer);
+                $this->batchDeleteMessage($buffer);
                 $buffer = [];
             }
         }
         if ($buffer) {
+            $this->batchDeleteMessage($buffer);
+        }
+    }
+
+    private function batchDeleteMessage($buffer)
+    {
+
+        try {
             $this->queue->batchDeleteMessage($buffer);
+        }
+        catch (\Exception $e) {
+            mdebug($e->getMessage());
         }
     }
 
