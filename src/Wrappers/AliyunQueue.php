@@ -93,7 +93,7 @@ class AliyunQueue implements QueueInterface
         }
 
         $buffer    = [];
-        $one_batch = 10;
+        $one_batch = min(10, $max_count);
         while ($msgs = $this->receiveMessageBatch(
             $one_batch,
             $wait
