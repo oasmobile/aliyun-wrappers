@@ -57,7 +57,7 @@ class AliyunAdbAnalyticExtension extends ConnectionAnalyticExtension
         $manifest   = $filePath . ".manifest";
         $credential = $credentialProvider->getCredentialString();
         $stmt       = sprintf(
-            "UNLOAD (%s) TO '%s' ACCESS_KEY_ID '%s' SECRET_ACCESS_KEY '%s'  format csv  %s %s %s %s %s ALLOWOVERWRITE 'true'",
+            "UNLOAD (%s) TO '%s' ACCESS_KEY_ID '%s' SECRET_ACCESS_KEY '%s'  format text  %s %s %s %s %s ALLOWOVERWRITE 'true' \"null\" '' ",
             $this->normalizeSingleQuotedValue($sql),
             $this->normalizeFilePath($filePath),
             $credential['access_key'],
