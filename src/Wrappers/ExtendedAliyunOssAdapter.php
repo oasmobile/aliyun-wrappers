@@ -289,7 +289,15 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
 
         $object = $this->applyPathPrefix($path);
 
-        return $this->client->doesObjectExist($this->bucket, $object);
+        if ($this->client->doesObjectExist($this->bucket, $object)) {
+            return true;
+        }
+        $list = $this->listContents($path);
+        if (count($list) > 0) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -321,7 +329,7 @@ class ExtendedAliyunOssAdapter extends AbstractAdapter implements FindableAdapte
         ];
         $this->client->getObject($this->bucket, $object, $option);
 
-        return compact('stream', 'path'); 
+        return compact('stream', 'path');
     }
 
     /**
